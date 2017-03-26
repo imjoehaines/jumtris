@@ -80,13 +80,11 @@ local isInsideContainer = function(x, y)
 end
 
 function love.mousepressed(x, y, button)
-  if button ~= 1 then return end
+  if button ~= 1 or not isInsideContainer(x, y) then return end
 
-  if isInsideContainer(x, y) then
-    -- work out the x & y coordinates in the grid of the clicked position
-    local gridX = math.floor((x - CONTAINER_OFFSET_X) / SQUARE_SIZE)
-    local gridY = math.floor((y - CONTAINER_OFFSET_Y) / SQUARE_SIZE)
+  -- work out the x & y coordinates in the grid of the clicked position
+  local gridX = math.floor((x - CONTAINER_OFFSET_X) / SQUARE_SIZE)
+  local gridY = math.floor((y - CONTAINER_OFFSET_Y) / SQUARE_SIZE)
 
-    grid[gridY][gridX] = grid[gridY][gridX] < COLOUR_RED and grid[gridY][gridX] + 1 or COLOUR_DEFAULT
-  end
+  grid[gridY][gridX] = grid[gridY][gridX] < COLOUR_RED and grid[gridY][gridX] + 1 or COLOUR_DEFAULT
 end
