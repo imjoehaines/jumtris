@@ -18,6 +18,21 @@ for y = 0, SQUARES_IN_ROW - 1 do
   end
 end
 
+local COLOUR_DEFAULT = 0
+local COLOUR_BLUE = 1 -- vertical blocks
+local COLOUR_GREEN = 2 -- horizontal blocks
+local COLOUR_PINK = 3 -- square blocks
+local COLOUR_PURPLE = 4 -- small "L" blocks
+local COLOUR_RED = 5 -- large "L" blocks
+
+local GRID_COLOURS = {}
+GRID_COLOURS[COLOUR_DEFAULT] = {236, 219, 188, 200}
+GRID_COLOURS[COLOUR_BLUE] = {170, 201, 199, 200}
+GRID_COLOURS[COLOUR_GREEN] = {182, 216, 192, 200}
+GRID_COLOURS[COLOUR_PINK] = {230, 198, 231, 200}
+GRID_COLOURS[COLOUR_PURPLE] = {210, 197, 232, 200}
+GRID_COLOURS[COLOUR_RED] = {255, 158, 158, 200}
+
 function love.draw()
   love.graphics.setBackgroundColor(236, 219, 188)
   love.graphics.setColor(255, 255, 255, 150)
@@ -40,7 +55,9 @@ function love.draw()
       local offsetX = startX + x * SQUARE_SIZE
       local offsetY = startY + y * SQUARE_SIZE
 
-      love.graphics.setColor(236, 219, 188, 200)
+      local colour = GRID_COLOURS[grid[y][x]]
+
+      love.graphics.setColor(colour)
       love.graphics.rectangle(
         'fill',
         offsetX,
