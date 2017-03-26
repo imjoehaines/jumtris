@@ -1,6 +1,7 @@
 local WINDOW_WIDTH, WINDOW_HEIGHT = love.graphics.getDimensions()
 local CONTAINER_PADDING = 20
-local CONTAINER_SIZE = math.min(WINDOW_WIDTH, WINDOW_HEIGHT) - 200
+local CONTAINER_WINDOW_OFFSET = 200
+local CONTAINER_SIZE = math.min(WINDOW_WIDTH, WINDOW_HEIGHT) - CONTAINER_WINDOW_OFFSET
 local CONTAINER_OFFSET_X = WINDOW_WIDTH / 2 - CONTAINER_SIZE / 2
 local CONTAINER_OFFSET_Y = WINDOW_HEIGHT / 2 - CONTAINER_SIZE / 2
 
@@ -68,5 +69,24 @@ function love.draw()
         10
       )
     end
+  end
+end
+
+local isInsideContainer = function(x, y)
+ return x >= CONTAINER_OFFSET_X and
+    x <= CONTAINER_OFFSET_X + CONTAINER_SIZE and
+    y >= CONTAINER_OFFSET_Y and
+    y <= CONTAINER_OFFSET_Y + CONTAINER_SIZE
+end
+
+function love.mousepressed(x, y, button)
+  if button ~= 1 then return end
+
+  if isInsideContainer(x, y) then
+    -- work out the x & y coordinates in the grid of the clicked position
+    local gridX = math.floor((x - CONTAINER_OFFSET_X) / SQUARE_SIZE)
+    local gridY = math.floor((y - CONTAINER_OFFSET_Y) / SQUARE_SIZE)
+
+    grid[gridY][gridX] = grid[gridY][gridX] < COLOUR_RED and grid[gridY][gridX] + 1 or COLOUR_DEFAULT
   end
 end
