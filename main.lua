@@ -4,9 +4,19 @@ local CONTAINER_SIZE = math.min(WINDOW_WIDTH, WINDOW_HEIGHT) - 200
 local CONTAINER_OFFSET_X = WINDOW_WIDTH / 2 - CONTAINER_SIZE / 2
 local CONTAINER_OFFSET_Y = WINDOW_HEIGHT / 2 - CONTAINER_SIZE / 2
 
-local SQUARES_IN_CONTAINER = 10
-local SQUARE_PADDING = CONTAINER_PADDING / SQUARES_IN_CONTAINER
-local SQUARE_SIZE = CONTAINER_SIZE / SQUARES_IN_CONTAINER
+local SQUARES_IN_ROW = 10
+local SQUARE_PADDING = CONTAINER_PADDING / SQUARES_IN_ROW
+local SQUARE_SIZE = CONTAINER_SIZE / SQUARES_IN_ROW
+
+-- initialise the grid
+local grid = {}
+for y = 0, SQUARES_IN_ROW - 1 do
+  grid[y] = {}
+
+  for x = 0, SQUARES_IN_ROW - 1 do
+    grid[y][x] = 0
+  end
+end
 
 function love.draw()
   love.graphics.setBackgroundColor(236, 219, 188)
@@ -22,8 +32,8 @@ function love.draw()
     10
   )
 
-  for y = 0, SQUARES_IN_CONTAINER - 1 do
-    for x = 0, SQUARES_IN_CONTAINER - 1 do
+  for y = 0, #grid do
+    for x = 0, #grid do
       local startX = CONTAINER_OFFSET_X + SQUARE_PADDING / 2
       local startY = CONTAINER_OFFSET_Y + SQUARE_PADDING / 2
 
