@@ -11,15 +11,8 @@ local SQUARE_SIZE = CONTAINER_SIZE / SQUARES_IN_ROW
 
 local PLAY_MARKER_SPEED = 200
 
--- initialise the grid
 local grid = {}
-for y = 0, SQUARES_IN_ROW - 1 do
-  grid[y] = {}
-
-  for x = 0, SQUARES_IN_ROW - 1 do
-    grid[y][x] = 0
-  end
-end
+local GRID_COLOURS = {}
 
 local COLOUR_DEFAULT = 0
 local COLOUR_BLUE = 1
@@ -28,7 +21,6 @@ local COLOUR_PINK = 3
 local COLOUR_PURPLE = 4
 local COLOUR_RED = 5
 
-local GRID_COLOURS = {}
 GRID_COLOURS[COLOUR_DEFAULT] = {236, 219, 188}
 GRID_COLOURS[COLOUR_BLUE] = {170, 201, 216}
 GRID_COLOURS[COLOUR_GREEN] = {182, 216, 192}
@@ -41,6 +33,19 @@ local playMarker = {
 }
 
 local activeGridX = playMarker.x
+
+function love.load()
+  -- initialise the grid
+  for y = 0, SQUARES_IN_ROW - 1 do
+    grid[y] = {}
+
+    for x = 0, SQUARES_IN_ROW - 1 do
+      grid[y][x] = 0
+    end
+  end
+
+  playMarker.x = CONTAINER_OFFSET_X
+end
 
 function love.draw()
   love.graphics.setBackgroundColor(236, 219, 188)
@@ -107,5 +112,13 @@ function love.mousepressed(x, y, button)
     grid[gridY][gridX] = grid[gridY][gridX] < COLOUR_RED and grid[gridY][gridX] + 1 or COLOUR_DEFAULT
   else
     grid[gridY][gridX] = grid[gridY][gridX] > COLOUR_DEFAULT and grid[gridY][gridX] - 1 or COLOUR_RED
+  end
+end
+
+function love.keypressed(key)
+  if key == 'r' then
+    love.load()
+  elseif key == 'escape' or key == 'q' then
+    love.event.quit()
   end
 end
