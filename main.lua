@@ -9,6 +9,8 @@ local SQUARES_IN_ROW = 10
 local SQUARE_PADDING = CONTAINER_PADDING / SQUARES_IN_ROW
 local SQUARE_SIZE = CONTAINER_SIZE / SQUARES_IN_ROW
 
+local PLAY_MARKER_SPEED = 200
+
 -- initialise the grid
 local grid = {}
 for y = 0, SQUARES_IN_ROW - 1 do
@@ -20,11 +22,11 @@ for y = 0, SQUARES_IN_ROW - 1 do
 end
 
 local COLOUR_DEFAULT = 0
-local COLOUR_BLUE = 1 -- vertical blocks
-local COLOUR_GREEN = 2 -- horizontal blocks
-local COLOUR_PINK = 3 -- square blocks
-local COLOUR_PURPLE = 4 -- small "L" blocks
-local COLOUR_RED = 5 -- large "L" blocks
+local COLOUR_BLUE = 1
+local COLOUR_GREEN = 2
+local COLOUR_PINK = 3
+local COLOUR_PURPLE = 4
+local COLOUR_RED = 5
 
 local GRID_COLOURS = {}
 GRID_COLOURS[COLOUR_DEFAULT] = {236, 219, 188, 200}
@@ -33,6 +35,10 @@ GRID_COLOURS[COLOUR_GREEN] = {182, 216, 192, 200}
 GRID_COLOURS[COLOUR_PINK] = {236, 180, 236, 200}
 GRID_COLOURS[COLOUR_PURPLE] = {206, 190, 234, 200}
 GRID_COLOURS[COLOUR_RED] = {255, 158, 158, 200}
+
+local playMarker = {
+  x = CONTAINER_OFFSET_X
+}
 
 function love.draw()
   love.graphics.setBackgroundColor(236, 219, 188)
@@ -69,6 +75,22 @@ function love.draw()
         10
       )
     end
+  end
+
+  love.graphics.setColor(0, 0, 0, 100)
+  love.graphics.line(
+    playMarker.x,
+    CONTAINER_OFFSET_Y,
+    playMarker.x,
+    CONTAINER_OFFSET_Y + CONTAINER_SIZE
+  )
+end
+
+function love.update(dt)
+  playMarker.x = playMarker.x + (dt * PLAY_MARKER_SPEED)
+
+  if playMarker.x > CONTAINER_OFFSET_X + CONTAINER_SIZE then
+    playMarker.x = CONTAINER_OFFSET_X
   end
 end
 
