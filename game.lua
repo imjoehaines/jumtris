@@ -11,6 +11,8 @@ local SQUARE_SIZE = CONTAINER_SIZE / SQUARES_IN_ROW
 
 local PLAY_MARKER_SPEED = 200
 
+local isPaused = false
+
 local grid = {}
 local GRID_COLOURS = {}
 
@@ -94,6 +96,8 @@ function game.draw()
 end
 
 function game.update(dt)
+  if isPaused then return end
+
   playMarker.x = playMarker.x + (dt * PLAY_MARKER_SPEED)
 
   if playMarker.x > CONTAINER_OFFSET_X + CONTAINER_SIZE then
@@ -115,6 +119,10 @@ function game.mousepressed(x, y, button)
   else
     grid[gridY][gridX] = grid[gridY][gridX] > COLOUR_DEFAULT and grid[gridY][gridX] - 1 or COLOUR_RED
   end
+end
+
+function game.togglePause()
+  isPaused = not isPaused
 end
 
 return game

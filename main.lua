@@ -24,5 +24,7 @@ function love.keypressed(key)
     love.load()
   elseif key == 'escape' or key == 'q' then
     love.event.quit()
+  elseif key == 'space' then
+    game.togglePause()
   end
 end
