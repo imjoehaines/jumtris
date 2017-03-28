@@ -1,7 +1,7 @@
 local game
 
 function love.load()
-  game = require 'game'
+  game = require 'lib/game'
   game.load()
 end
 
