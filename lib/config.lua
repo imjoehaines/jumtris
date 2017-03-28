@@ -9,7 +9,7 @@ local windowWidth, windowHeight = love.graphics.getDimensions()
 
 config.windowWidth = windowWidth
 config.windowHeight = windowHeight
-config.containerSize = math.min(windowWidth, windowHeight) - config.containerWindowOffset
+config.containerSize = math.min(config.windowWidth, config.windowHeight) - config.containerWindowOffset
 config.containerOffsetX = config.windowWidth / 2 - config.containerSize / 2
 config.containerOffsetY = config.windowHeight / 2 - config.containerSize / 2
 config.squarePadding = config.containerPadding
