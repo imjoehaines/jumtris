@@ -1,15 +1,4 @@
-local WINDOW_WIDTH, WINDOW_HEIGHT = love.graphics.getDimensions()
-local CONTAINER_PADDING = 2
-local CONTAINER_WINDOW_OFFSET = 100
-local CONTAINER_SIZE = math.min(WINDOW_WIDTH, WINDOW_HEIGHT) - CONTAINER_WINDOW_OFFSET
-local CONTAINER_OFFSET_X = WINDOW_WIDTH / 2 - CONTAINER_SIZE / 2
-local CONTAINER_OFFSET_Y = WINDOW_HEIGHT / 2 - CONTAINER_SIZE / 2
-
-local SQUARES_IN_ROW = 10
-local SQUARE_PADDING = CONTAINER_PADDING
-local SQUARE_SIZE = CONTAINER_SIZE / SQUARES_IN_ROW
-
-local PLAY_MARKER_SPEED = 200
+local config = require 'lib/config'
 
 local isPaused = false
 
@@ -31,31 +20,31 @@ GRID_COLOURS[COLOUR_PURPLE] = {206, 190, 234}
 GRID_COLOURS[COLOUR_RED] = {255, 158, 158}
 
 local playMarker = {
-  x = CONTAINER_OFFSET_X
+  x = config.containerOffsetX
 }
 
 local activeGridX = playMarker.x
 
 local isInsideContainer = function(x, y)
- return x >= CONTAINER_OFFSET_X and
-    x <= CONTAINER_OFFSET_X + CONTAINER_SIZE and
-    y >= CONTAINER_OFFSET_Y and
-    y <= CONTAINER_OFFSET_Y + CONTAINER_SIZE
+ return x >= config.containerOffsetX and
+    x <= config.containerOffsetX + config.containerSize and
+    y >= config.containerOffsetY and
+    y <= config.containerOffsetY + config.containerSize
 end
 
 local game = {}
 
 function game.load()
   -- initialise the grid
-  for y = 0, SQUARES_IN_ROW - 1 do
+  for y = 0, config.squaresInRow - 1 do
     grid[y] = {}
 
-    for x = 0, SQUARES_IN_ROW - 1 do
+    for x = 0, config.squaresInRow - 1 do
       grid[y][x] = 0
     end
   end
 
-  playMarker.x = CONTAINER_OFFSET_X
+  playMarker.x = config.containerOffsetX
 end
 
 function game.draw()
@@ -64,19 +53,19 @@ function game.draw()
 
   love.graphics.rectangle(
     'fill',
-    CONTAINER_OFFSET_X - CONTAINER_PADDING / 2,
-    CONTAINER_OFFSET_Y - CONTAINER_PADDING / 2,
-    CONTAINER_SIZE + CONTAINER_PADDING,
-    CONTAINER_SIZE + CONTAINER_PADDING
+    config.containerOffsetX - config.containerPadding / 2,
+    config.containerOffsetY - config.containerPadding / 2,
+    config.containerSize + config.containerPadding,
+    config.containerSize + config.containerPadding
   )
 
   for y = 0, #grid do
     for x = 0, #grid do
-      local startX = CONTAINER_OFFSET_X + SQUARE_PADDING / 2
-      local startY = CONTAINER_OFFSET_Y + SQUARE_PADDING / 2
+      local startX = config.containerOffsetX + config.squarePadding / 2
+      local startY = config.containerOffsetY + config.squarePadding / 2
 
-      local offsetX = startX + x * SQUARE_SIZE
-      local offsetY = startY + y * SQUARE_SIZE
+      local offsetX = startX + x * config.squareSize
+      local offsetY = startY + y * config.squareSize
 
       local colour = GRID_COLOURS[grid[y][x]]
 
@@ -88,8 +77,8 @@ function game.draw()
         'fill',
         offsetX,
         offsetY,
-        SQUARE_SIZE - SQUARE_PADDING,
-        SQUARE_SIZE - SQUARE_PADDING
+        config.squareSize - config.squarePadding,
+        config.squareSize - config.squarePadding
       )
     end
   end
@@ -98,21 +87,21 @@ end
 function game.update(dt)
   if isPaused then return end
 
-  playMarker.x = playMarker.x + (dt * PLAY_MARKER_SPEED)
+  playMarker.x = playMarker.x + (dt * config.playMarkerSpeed)
 
-  if playMarker.x > CONTAINER_OFFSET_X + CONTAINER_SIZE then
-    playMarker.x = CONTAINER_OFFSET_X
+  if playMarker.x > config.containerOffsetX + config.containerSize then
+    playMarker.x = config.containerOffsetX
   end
 
-  activeGridX = math.floor((playMarker.x - CONTAINER_OFFSET_X) / SQUARE_SIZE)
+  activeGridX = math.floor((playMarker.x - config.containerOffsetX) / config.squareSize)
 end
 
 function game.mousepressed(x, y, button)
   if not isInsideContainer(x, y) then return end
 
   -- work out the x & y coordinates in the grid of the clicked position
-  local gridX = math.floor((x - CONTAINER_OFFSET_X) / SQUARE_SIZE)
-  local gridY = math.floor((y - CONTAINER_OFFSET_Y) / SQUARE_SIZE)
+  local gridX = math.floor((x - config.containerOffsetX) / config.squareSize)
+  local gridY = math.floor((y - config.containerOffsetY) / config.squareSize)
 
   if button == 1 then
     grid[gridY][gridX] = grid[gridY][gridX] < COLOUR_RED and grid[gridY][gridX] + 1 or COLOUR_DEFAULT

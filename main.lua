@@ -19,8 +19,13 @@ end
 
 function love.keypressed(key)
   if key == 'r' then
-    -- force game to be re-required every time
-    package.loaded.game = nil
+    -- force things to be re-required every time
+    for packageName, _ in pairs(package.loaded) do
+      if string.find(packageName, 'lib/') then
+        package.loaded[packageName] = nil
+      end
+    end
+
     love.load()
   elseif key == 'escape' or key == 'q' then
     love.event.quit()
