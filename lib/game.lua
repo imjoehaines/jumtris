@@ -1,15 +1,11 @@
 local config = require 'lib/config'
-local colours = require 'lib/colours'
+local createBlock = require 'lib/block'
 
 local isPaused = false
-
-local grid = {}
-
-local playMarker = {
-  x = config.containerOffsetX
-}
-
-local activeGridX = playMarker.x
+local startX = config.containerOffsetX + config.squarePadding / 2
+local startY = config.containerOffsetY + config.squarePadding / 2
+local playMarker = config.containerOffsetX
+local activeGridX = playMarker
 
 local isInsideContainer = function(x, y)
  return x >= config.containerOffsetX and
@@ -18,6 +14,7 @@ local isInsideContainer = function(x, y)
     y <= config.containerOffsetY + config.containerSize
 end
 
+local grid = {}
 local game = {}
 
 function game.load()
@@ -26,11 +23,11 @@ function game.load()
     grid[y] = {}
 
     for x = 0, config.squaresInRow - 1 do
-      grid[y][x] = 1
+      grid[y][x] = createBlock()
     end
   end
 
-  playMarker.x = config.containerOffsetX
+  playMarker = config.containerOffsetX
 end
 
 function game.draw()
@@ -47,16 +44,10 @@ function game.draw()
 
   for y = 0, #grid do
     for x = 0, #grid do
-      local startX = config.containerOffsetX + config.squarePadding / 2
-      local startY = config.containerOffsetY + config.squarePadding / 2
-
       local offsetX = startX + x * config.squareSize
       local offsetY = startY + y * config.squareSize
 
-      local colour = colours[grid[y][x]]
-
-      -- highlight the active column
-      colour[4] = x == activeGridX and 150 or 255
+      local colour = grid[y][x].getColour()
 
       love.graphics.setColor(colour)
       love.graphics.rectangle(
@@ -68,18 +59,27 @@ function game.draw()
       )
     end
   end
+
+  love.graphics.setColor(255, 255, 255, 50)
+  love.graphics.rectangle(
+    'fill',
+    startX + activeGridX * config.squareSize,
+    startY,
+    config.squareSize - config.squarePadding,
+    config.containerSize - config.squarePadding
+  )
 end
 
 function game.update(dt)
   if isPaused then return end
 
-  playMarker.x = playMarker.x + (dt * config.playMarkerSpeed)
+  playMarker = playMarker + (dt * config.playMarkerSpeed)
 
-  if playMarker.x > config.containerOffsetX + config.containerSize then
-    playMarker.x = config.containerOffsetX
+  if playMarker > config.containerOffsetX + config.containerSize then
+    playMarker = config.containerOffsetX
   end
 
-  activeGridX = math.floor((playMarker.x - config.containerOffsetX) / config.squareSize)
+  activeGridX = math.floor((playMarker - config.containerOffsetX) / config.squareSize)
 end
 
 function game.mousepressed(x, y, button)
@@ -90,9 +90,9 @@ function game.mousepressed(x, y, button)
   local gridY = math.floor((y - config.containerOffsetY) / config.squareSize)
 
   if button == 1 then
-    grid[gridY][gridX] = grid[gridY][gridX] < #colours and grid[gridY][gridX] + 1 or 1
-  else
-    grid[gridY][gridX] = grid[gridY][gridX] > 1 and grid[gridY][gridX] - 1 or #colours
+    grid[gridY][gridX].onLeftClick()
+  elseif button == 2 then
+    grid[gridY][gridX].onRightClick()
   end
 end
 
