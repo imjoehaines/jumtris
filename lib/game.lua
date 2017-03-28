@@ -1,23 +1,9 @@
 local config = require 'lib/config'
+local colours = require 'lib/colours'
 
 local isPaused = false
 
 local grid = {}
-local GRID_COLOURS = {}
-
-local COLOUR_DEFAULT = 0
-local COLOUR_BLUE = 1
-local COLOUR_GREEN = 2
-local COLOUR_PINK = 3
-local COLOUR_PURPLE = 4
-local COLOUR_RED = 5
-
-GRID_COLOURS[COLOUR_DEFAULT] = {236, 219, 188}
-GRID_COLOURS[COLOUR_BLUE] = {170, 201, 216}
-GRID_COLOURS[COLOUR_GREEN] = {182, 216, 192}
-GRID_COLOURS[COLOUR_PINK] = {236, 180, 236}
-GRID_COLOURS[COLOUR_PURPLE] = {206, 190, 234}
-GRID_COLOURS[COLOUR_RED] = {255, 158, 158}
 
 local playMarker = {
   x = config.containerOffsetX
@@ -40,7 +26,7 @@ function game.load()
     grid[y] = {}
 
     for x = 0, config.squaresInRow - 1 do
-      grid[y][x] = 0
+      grid[y][x] = 1
     end
   end
 
@@ -67,7 +53,7 @@ function game.draw()
       local offsetX = startX + x * config.squareSize
       local offsetY = startY + y * config.squareSize
 
-      local colour = GRID_COLOURS[grid[y][x]]
+      local colour = colours[grid[y][x]]
 
       -- highlight the active column
       colour[4] = x == activeGridX and 150 or 255
@@ -104,9 +90,9 @@ function game.mousepressed(x, y, button)
   local gridY = math.floor((y - config.containerOffsetY) / config.squareSize)
 
   if button == 1 then
-    grid[gridY][gridX] = grid[gridY][gridX] < COLOUR_RED and grid[gridY][gridX] + 1 or COLOUR_DEFAULT
+    grid[gridY][gridX] = grid[gridY][gridX] < #colours and grid[gridY][gridX] + 1 or 1
   else
-    grid[gridY][gridX] = grid[gridY][gridX] > COLOUR_DEFAULT and grid[gridY][gridX] - 1 or COLOUR_RED
+    grid[gridY][gridX] = grid[gridY][gridX] > 1 and grid[gridY][gridX] - 1 or #colours
   end
 end
 
