@@ -23,7 +23,7 @@ function game.load()
     grid[y] = {}
 
     for x = 0, config.squaresInRow - 1 do
-      grid[y][x] = createBlock()
+      grid[y][x] = createBlock(x, y)
     end
   end
 
@@ -44,19 +44,7 @@ function game.draw()
 
   for y = 0, #grid do
     for x = 0, #grid do
-      local offsetX = startX + x * config.squareSize
-      local offsetY = startY + y * config.squareSize
-
-      local colour = grid[y][x].getColour()
-
-      love.graphics.setColor(colour)
-      love.graphics.rectangle(
-        'fill',
-        offsetX,
-        offsetY,
-        config.squareSize - config.squarePadding,
-        config.squareSize - config.squarePadding
-      )
+      grid[y][x].draw(startX, startY)
     end
   end
 
